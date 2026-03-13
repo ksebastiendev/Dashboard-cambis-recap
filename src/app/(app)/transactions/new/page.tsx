@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { QuickTransactionForm } from "@/components/transactions/QuickTransactionForm";
+import { listClientChoices } from "@/server/services/transactionService";
 
 export const metadata: Metadata = {
   title: "Nouvelle transaction",
 };
 
-export default function NewTransactionPage() {
+export default async function NewTransactionPage() {
+  const clients = await listClientChoices();
+
   return (
     <div className="space-y-6 max-w-lg mx-auto">
       <PageHeader
@@ -15,10 +20,14 @@ export default function NewTransactionPage() {
         icon={Plus}
       />
 
-      {/* TODO Phase 3 — QuickTransactionForm */}
-      <p className="text-muted-foreground text-sm">
-        Le formulaire de saisie sera implémenté en Phase 3.
-      </p>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Enregistrer une transaction</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <QuickTransactionForm clients={clients} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

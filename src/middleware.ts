@@ -21,7 +21,10 @@ export async function middleware(request: NextRequest) {
 
   // Vérification de la session via iron-session sur le cookie
   const response = NextResponse.next();
-  const session = await getIronSession<SessionData>(request.cookies, sessionOptions);
+  const session = await getIronSession<SessionData>(
+    request.cookies as any,
+    sessionOptions
+  );
 
   if (!session.isLoggedIn) {
     const loginUrl = new URL("/login", request.url);
