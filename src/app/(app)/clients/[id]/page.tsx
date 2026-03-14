@@ -12,6 +12,7 @@ import {
   formatOperationType,
 } from "@/lib/formatters";
 import { getClientDetail } from "@/server/services/clientService";
+import { EditClientForm } from "@/components/clients/EditClientForm";
 
 interface ClientTransactionView {
   id: string;
@@ -79,14 +80,17 @@ export default async function ClientDetailPage({
         <CardHeader>
           <CardTitle>Informations client</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-2 text-sm sm:grid-cols-2">
-          <p>Nom: <span className="font-medium">{client.fullName}</span></p>
-          <p>Surnom: <span className="font-medium">{client.nickname ?? "—"}</span></p>
-          <p>Téléphone: <span className="font-medium">{client.phone ?? "—"}</span></p>
-          <p>
-            Statut: <Badge variant={client.isActive ? "success" : "muted"}>{client.isActive ? "Actif" : "Inactif"}</Badge>
-          </p>
-          <p className="sm:col-span-2">Note: <span className="font-medium">{client.note ?? "—"}</span></p>
+        <CardContent>
+          <EditClientForm
+            id={client.id}
+            initialData={{
+              fullName: client.fullName,
+              nickname: client.nickname,
+              phone: client.phone,
+              note: client.note ?? null,
+              isActive: client.isActive,
+            }}
+          />
         </CardContent>
       </Card>
 

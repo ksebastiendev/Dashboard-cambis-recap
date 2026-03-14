@@ -50,9 +50,11 @@ export interface KpiComparison {
   today: DayKpi;
   yesterday: DayKpi;
   trends: {
-    transactions: number | null; // % variation, null si pas de données hier
+    transactions: number | null; // % variation vs hier
     clients: number | null;
     volume: number | null;
+    transactionsWeek: number | null; // % variation vs semaine précédente
+    volumeWeek: number | null;
   };
 }
 
