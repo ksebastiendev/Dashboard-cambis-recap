@@ -7,6 +7,7 @@ import {
   Plus,
   Users,
   History,
+  BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +32,11 @@ const navItems = [
     label: "Historique",
     href: "/history",
     icon: History,
+  },
+  {
+    label: "API",
+    href: "/api/docs",
+    icon: BookOpen,
   },
 ];
 

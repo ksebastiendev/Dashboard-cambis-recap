@@ -1,8 +1,8 @@
-// File: /Users/macbook/Rendu/Dashboard-cambis-recap/src/app/(app)/transactions/new/page.tsx
-import * as entry from '../../../../../../src/app/(app)/transactions/new/page.js'
+// File: /Users/macbook/Rendu/Dashboard-cambis-recap/src/app/(auth)/login/page.tsx
+import * as entry from '../../../../../src/app/(auth)/login/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
-type TEntry = typeof import('../../../../../../src/app/(app)/transactions/new/page.js')
+type TEntry = typeof import('../../../../../src/app/(auth)/login/page.js')
 
 type SegmentParams<T extends Object = any> = T extends Record<string, any>
   ? { [K in keyof T]: T[K] extends string ? string | string[] | undefined : never }
