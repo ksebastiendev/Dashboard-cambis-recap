@@ -22,6 +22,8 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
+  transactionAudits TransactionAudit[]
+
   @@map("users")
 }
 
@@ -70,9 +72,34 @@ model Transaction {
 }
 
 // ─────────────────────────────────────────
+// Audit transaction (traçabilité légère prod)
+// ─────────────────────────────────────────
+model TransactionAudit {
+  id            String                 @id @default(cuid())
+  transactionId String                 @map("transaction_id")
+  action        TransactionAuditAction
+  actorUserId   String?                @map("actor_user_id")
+  actorEmail    String?                @map("actor_email")
+  snapshot      Json?
+  createdAt     DateTime               @default(now()) @map("created_at")
+
+  actor         User?                  @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([transactionId])
+  @@index([actorUserId])
+  @@index([createdAt])
+  @@map("transaction_audits")
+}
+
+// ─────────────────────────────────────────
 // Enum type d'opération
 // ─────────────────────────────────────────
 enum OperationType {
   BUY_NAIRA  // Le cambiste achète des Naira (le client vend)
   SELL_NAIRA // Le cambiste vend des Naira (le client achète)
+}
+
+enum TransactionAuditAction {
+  UPDATE
+  DELETE
 }

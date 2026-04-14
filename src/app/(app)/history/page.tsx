@@ -2,42 +2,16 @@ import type { Metadata } from "next";
 import { History } from "lucide-react";
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { EmptyState } from "@/components/shared/EmptyState";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  formatCfa,
-  formatDateFull,
-  formatNaira,
-  formatOperationType,
-  formatTime,
-} from "@/lib/formatters";
+import { HistoryTransactionsList } from "@/components/history/HistoryTransactionsList";
 import {
   listClientChoices,
-  listTransactionsWithClient,
 } from "@/server/services/transactionService";
 import type { OperationType } from "@prisma/client";
 
 export const metadata: Metadata = {
   title: "Historique",
 };
-
-function parseDateStart(value?: string): Date | undefined {
-  if (!value) return undefined;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return undefined;
-  date.setHours(0, 0, 0, 0);
-  return date;
-}
-
-function parseDateEnd(value?: string): Date | undefined {
-  if (!value) return undefined;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return undefined;
-  date.setHours(23, 59, 59, 999);
-  return date;
-}
 
 export default async function HistoryPage({
   searchParams,
@@ -56,14 +30,6 @@ export default async function HistoryPage({
     operationType === "BUY_NAIRA" || operationType === "SELL_NAIRA"
       ? operationType
       : undefined;
-
-  const transactions = await listTransactionsWithClient({
-    clientId: clientId || undefined,
-    operationType: typeFilter,
-    from: parseDateStart(from),
-    to: parseDateEnd(to),
-    limit: 300,
-  });
 
   return (
     <div className="space-y-6">
@@ -145,55 +111,14 @@ export default async function HistoryPage({
         </div>
       </form>
 
-      {transactions.length === 0 ? (
-        <Card>
-          <CardContent>
-            <EmptyState
-              icon={History}
-              title="Aucune transaction trouvée"
-              description="Ajuste les filtres ou enregistre une nouvelle transaction."
-            />
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-3">
-          {transactions.map((transaction) => (
-            <Card key={transaction.id}>
-              <CardContent className="space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <p className="text-sm font-medium">{transaction.client.fullName}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDateFull(transaction.transactionDate)} à {formatTime(transaction.transactionDate)}
-                    </p>
-                  </div>
-                  <Badge variant={transaction.operationType === "BUY_NAIRA" ? "success" : "warning"}>
-                    {formatOperationType(transaction.operationType)}
-                  </Badge>
-                </div>
-
-                <div className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-3">
-                  <p>
-                    Montant CFA: <span className="font-medium">{formatCfa(transaction.amountCfa)}</span>
-                  </p>
-                  <p>
-                    Montant Naira: <span className="font-medium">{formatNaira(transaction.amountNaira)}</span>
-                  </p>
-                  <p>
-                    Taux: <span className="font-medium">{transaction.exchangeRate.toFixed(4)}</span>
-                  </p>
-                </div>
-
-                {transaction.note && (
-                  <p className="rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground">
-                    {transaction.note}
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+      <HistoryTransactionsList
+        filters={{
+          clientId: clientId || undefined,
+          operationType: typeFilter,
+          from,
+          to,
+        }}
+      />
     </div>
   );
 }

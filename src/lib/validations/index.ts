@@ -50,7 +50,22 @@ export const createTransactionSchema = z.object({
   note: z.string().max(500).trim().optional().or(z.literal("")),
 });
 
+export const updateTransactionSchema = z.object({
+  operationType: z.enum(["BUY_NAIRA", "SELL_NAIRA"]),
+  amountCfa: z.coerce
+    .number()
+    .positive("Le montant CFA doit être supérieur à 0"),
+  amountNaira: z.coerce
+    .number()
+    .positive("Le montant Naira doit être supérieur à 0"),
+  exchangeRate: z.coerce
+    .number()
+    .positive("Le taux doit être supérieur à 0"),
+  note: z.string().max(500).trim().optional().or(z.literal("")),
+});
+
 export type CreateTransactionInput = z.infer<typeof createTransactionSchema>;
+export type UpdateTransactionInput = z.infer<typeof updateTransactionSchema>;
 
 // ─────────────────────────────────────────
 // Validation Auth

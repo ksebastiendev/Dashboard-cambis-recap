@@ -3,7 +3,7 @@ import { requireAuth } from "@/lib/auth";
 import { createTransactionSchema } from "@/lib/validations";
 import {
   createTransactionFromInput,
-  listTransactionsWithClient,
+  listTransactionsPage,
 } from "@/server/services/transactionService";
 
 function parseDateStart(value: string | null): Date | undefined {
@@ -28,14 +28,15 @@ export async function GET(request: NextRequest) {
 
     const clientId = request.nextUrl.searchParams.get("clientId") ?? undefined;
     const operationType = request.nextUrl.searchParams.get("operationType");
+    const cursor = request.nextUrl.searchParams.get("cursor") ?? undefined;
     const from = parseDateStart(request.nextUrl.searchParams.get("from"));
     const to = parseDateEnd(request.nextUrl.searchParams.get("to"));
-    const limitRaw = Number(request.nextUrl.searchParams.get("limit") ?? "200");
+    const limitRaw = Number(request.nextUrl.searchParams.get("limit") ?? "20");
     const limit = Number.isFinite(limitRaw)
-      ? Math.max(1, Math.min(500, Math.trunc(limitRaw)))
-      : 200;
+      ? Math.max(1, Math.min(100, Math.trunc(limitRaw)))
+      : 20;
 
-    const transactions = await listTransactionsWithClient({
+    const transactions = await listTransactionsPage({
       clientId,
       operationType:
         operationType === "BUY_NAIRA" || operationType === "SELL_NAIRA"
@@ -44,9 +45,19 @@ export async function GET(request: NextRequest) {
       from,
       to,
       limit,
+      cursor,
     });
 
-    return NextResponse.json({ data: transactions }, { status: 200 });
+    return NextResponse.json(
+      {
+        data: transactions.items,
+        pageInfo: {
+          nextCursor: transactions.nextCursor,
+          hasMore: transactions.hasMore,
+        },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
