@@ -12,8 +12,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Couleur primaire : bleu marine sobre */
-    --primary: 221 83% 40%;
+    /* Couleur primaire : orange Cambis */
+    --primary: 19 99% 50%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96%;
@@ -37,7 +37,7 @@
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 221 83% 40%;
+    --ring: 19 99% 50%;
 
     --radius: 0.625rem;
   }
@@ -52,8 +52,8 @@
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 8%;
+    --primary: 19 99% 58%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
@@ -75,7 +75,7 @@
 
     --border: 217 33% 17%;
     --input: 217 33% 17%;
-    --ring: 217 91% 60%;
+    --ring: 19 99% 58%;
   }
 }
 
@@ -103,5 +103,15 @@
   ::-webkit-scrollbar-thumb {
     background-color: hsl(var(--border));
     border-radius: 2px;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

@@ -1,1 +1,0 @@
-self.__REACT_LOADABLE_MANIFEST="{\"components/dashboard/ActivityChartClient.tsx -> @/components/dashboard/ActivityChart\":{\"id\":\"components/dashboard/ActivityChartClient.tsx -> @/components/dashboard/ActivityChart\",\"files\":[\"static/chunks/_app-pages-browser_src_components_dashboard_ActivityChart_tsx.js\"]}}"

@@ -5,6 +5,7 @@ import {
   getClientDetail,
   updateClientFromInput,
 } from "@/server/services/clientService";
+import { deleteClient, getClientById } from "@/server/repositories/clientRepository";
 
 export async function GET(
   _request: NextRequest,
@@ -56,6 +57,31 @@ export async function PATCH(
     }
 
     console.error("[api/clients/:id][PATCH]", error);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    await requireAuth();
+    const { id } = await params;
+
+    const existing = await getClientById(id);
+    if (!existing) {
+      return NextResponse.json({ error: "Client introuvable" }, { status: 404 });
+    }
+
+    await deleteClient(id);
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
+    console.error("[api/clients/:id][DELETE]", error);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }

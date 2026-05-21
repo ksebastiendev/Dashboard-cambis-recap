@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+// Valeurs de l'enum ClientRole — doit rester synchronisé avec prisma/schema.prisma
+const CLIENT_ROLES = ["DOLLAR_SELLER", "DOLLAR_BUYER", "NAIRA_BUYER"] as const;
+
 // ─────────────────────────────────────────
 // Validation Client
 // ─────────────────────────────────────────
@@ -17,11 +20,12 @@ export const createClientSchema = z.object({
     .trim()
     .optional()
     .or(z.literal(""))
-    // Accepte formats internationaux basiques
     .refine((val) => !val || /^[+\d\s\-().]{6,20}$/.test(val), {
       message: "Format de téléphone invalide",
     }),
   note: z.string().max(500).trim().optional().or(z.literal("")),
+  // V2 — rôles optionnels (DOLLAR_SELLER, DOLLAR_BUYER, NAIRA_BUYER)
+  types: z.array(z.enum(CLIENT_ROLES)).optional(),
 });
 
 export const updateClientSchema = createClientSchema.partial().extend({
