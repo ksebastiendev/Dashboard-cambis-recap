@@ -1,5 +1,6 @@
-// Schéma Prisma — Dashboard Cambiste V1
-// Modèle de données : Users, Clients, Transactions
+// Schéma Prisma — Dashboard Cambiste V1 + V2
+// V1 : Transaction / TransactionAudit — conservés tels quels (read-only pendant migration)
+// V2 : Operation / OperationAudit / ClientType — nouveaux modèles
 
 generator client {
   provider = "prisma-client-js"
@@ -12,7 +13,7 @@ datasource db {
 }
 
 // ─────────────────────────────────────────
-// Utilisateur (mono-utilisateur en V1)
+// Utilisateur (mono-utilisateur)
 // ─────────────────────────────────────────
 model User {
   id           String   @id @default(cuid())
@@ -23,6 +24,10 @@ model User {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   transactionAudits TransactionAudit[]
+
+  // V2
+  operations      Operation[]
+  operationAudits OperationAudit[]
 
   @@map("users")
 }
@@ -37,10 +42,15 @@ model Client {
   phone        String?
   note         String?
   isActive     Boolean       @default(true) @map("is_active")
+  isDeleted    Boolean       @default(false) @map("is_deleted")
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
 
   transactions Transaction[]
+
+  // V2
+  clientTypes ClientType[]
+  operations  Operation[]
 
   @@map("clients")
 }
@@ -102,4 +112,104 @@ enum OperationType {
 enum TransactionAuditAction {
   UPDATE
   DELETE
+}
+
+// ═════════════════════════════════════════
+// V2 — Enums
+// ═════════════════════════════════════════
+
+// Renommé OpType pour éviter le conflit avec OperationType (V1)
+enum OpType {
+  TYPE_A // Achat de dollars : CFA → $
+  TYPE_B // Vente de dollars : $ → Naira
+  TYPE_C // Vente de Naira  : Naira → CFA  ← opération principale
+}
+
+enum ClientRole {
+  DOLLAR_SELLER // Vendeur de dollars (TYPE_A)
+  DOLLAR_BUYER  // Acheteur de dollars → Naira (TYPE_B)
+  NAIRA_BUYER   // Acheteur de Naira → CFA (TYPE_C) ← PRIORITAIRE
+}
+
+enum AuditAction {
+  UPDATE
+  DELETE
+}
+
+// ═════════════════════════════════════════
+// V2 — Operation
+// ═════════════════════════════════════════
+model Operation {
+  id   String @id @default(cuid())
+  type OpType
+
+  // TYPE_A et TYPE_B : champs dollars
+  amountUsd     Decimal? @db.Decimal(18, 4)
+  rateCfaPerUsd Decimal? @db.Decimal(18, 4) // TYPE_A : CFA payé par dollar
+  rateNgnPerUsd Decimal? @db.Decimal(18, 4) // TYPE_B : Naira reçu par dollar
+
+  // TYPE_C : champs Naira
+  amountNgn     Decimal? @db.Decimal(18, 2)
+  rateCfaPerNgn Decimal? @db.Decimal(18, 6)
+
+  // Valeurs calculées côté serveur (jamais acceptées du client)
+  totalCfaSpent    Decimal? @db.Decimal(18, 2) // TYPE_A : amountUsd × rateCfaPerUsd
+  totalNgnReceived Decimal? @db.Decimal(18, 2) // TYPE_B : amountUsd × rateNgnPerUsd
+  totalCfaReceived Decimal? @db.Decimal(18, 2) // TYPE_C : amountNgn × rateCfaPerNgn
+
+  note          String?
+  operationDate DateTime @default(now())
+  isDeleted     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  audits OperationAudit[]
+
+  @@index([operationDate])
+  @@index([type])
+  @@index([clientId])
+  @@index([userId])
+  @@index([isDeleted])
+  @@index([type, operationDate, isDeleted])
+  @@map("operations")
+}
+
+// ═════════════════════════════════════════
+// V2 — ClientType (table de liaison client ↔ rôles)
+// ═════════════════════════════════════════
+model ClientType {
+  id       String     @id @default(cuid())
+  type     ClientRole
+  clientId String
+  client   Client     @relation(fields: [clientId], references: [id])
+
+  @@unique([clientId, type])
+  @@map("client_types")
+}
+
+// ═════════════════════════════════════════
+// V2 — OperationAudit
+// ═════════════════════════════════════════
+model OperationAudit {
+  id          String      @id @default(cuid())
+  action      AuditAction
+  snapshot    Json
+  performedAt DateTime    @default(now())
+
+  operationId String
+  operation   Operation @relation(fields: [operationId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([operationId])
+  @@index([userId])
+  @@index([performedAt])
+  @@map("operation_audits")
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { loginSchema, type LoginInput } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,8 +52,14 @@ export default function LoginPage() {
       <div className="w-full max-w-sm space-y-6">
         {/* En-tête */}
         <div className="text-center space-y-2">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary mx-auto">
-            <span className="text-lg font-bold text-primary-foreground">CB</span>
+          <div className="flex items-center justify-center mx-auto">
+            <Image
+              src="/CAMBIS RECAP.png"
+              alt="Cambis Recap"
+              width={56}
+              height={56}
+              className="rounded-xl object-contain"
+            />
           </div>
           <h1 className="text-2xl font-bold tracking-tight">Cambis Recap</h1>
           <p className="text-sm text-muted-foreground">

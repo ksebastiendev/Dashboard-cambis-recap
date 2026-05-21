@@ -20,11 +20,16 @@ export const metadata: Metadata = {
     template: "%s | Cambis Recap",
   },
   description: "Dashboard de suivi d'activité pour cambiste",
-  manifest: "/manifest.json",
+  icons: {
+    icon: "/icons/icon-192.png",
+    shortcut: "/icons/icon-192.png",
+    apple: "/icons/icon-192.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Cambis Recap",
+    title: "Cambis",
+    startupImage: "/icons/icon-512.png",
   },
 };
 
@@ -32,7 +37,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#1d4ed8",
+  themeColor: "#FE5301",
 };
 
 export default function RootLayout({

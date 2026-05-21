@@ -1,12 +1,13 @@
+import type { ClientRole } from "@prisma/client";
 import {
   createClient,
   getClientById,
-  getClientStats,
-  getClientTransactions,
   getStatsForClientIds,
   listClients,
   updateClient,
+  getClientOperationStats,
 } from "@/server/repositories/clientRepository";
+import { getOperations } from "@/server/repositories/operationRepo";
 import type { CreateClientInput, UpdateClientInput } from "@/lib/validations";
 
 export interface ClientListItem {
@@ -16,14 +17,18 @@ export interface ClientListItem {
   phone: string | null;
   isActive: boolean;
   createdAt: Date;
+  types: ClientRole[];
   transactionCount: number;
   totalVolumeCfa: number;
   lastTransactionDate: Date | null;
 }
 
-export async function listClientsWithStats(query?: string): Promise<ClientListItem[]> {
-  const clients = await listClients({ query, limit: 100 });
-  const stats = await getStatsForClientIds(clients.map((client) => client.id));
+export async function listClientsWithStats(
+  query?: string,
+  type?: ClientRole
+): Promise<ClientListItem[]> {
+  const clients = await listClients({ query, limit: 100, type });
+  const stats = await getStatsForClientIds(clients.map((c) => c.id));
 
   const statsByClientId = new Map(
     stats.map((item) => [
@@ -38,7 +43,6 @@ export async function listClientsWithStats(query?: string): Promise<ClientListIt
 
   return clients.map((client) => {
     const clientStats = statsByClientId.get(client.id);
-
     return {
       id: client.id,
       fullName: client.fullName,
@@ -46,6 +50,7 @@ export async function listClientsWithStats(query?: string): Promise<ClientListIt
       phone: client.phone,
       isActive: client.isActive,
       createdAt: client.createdAt,
+      types: client.clientTypes.map((ct) => ct.type),
       transactionCount: clientStats?.transactionCount ?? 0,
       totalVolumeCfa: clientStats?.totalVolumeCfa ?? 0,
       lastTransactionDate: clientStats?.lastTransactionDate ?? null,
@@ -55,20 +60,17 @@ export async function listClientsWithStats(query?: string): Promise<ClientListIt
 
 export async function getClientDetail(id: string) {
   const client = await getClientById(id);
+  if (!client) return null;
 
-  if (!client) {
-    return null;
-  }
-
-  const [stats, transactions] = await Promise.all([
-    getClientStats(id),
-    getClientTransactions(id, 100),
+  const [opStats, recentOps] = await Promise.all([
+    getClientOperationStats(id),
+    getOperations({ clientId: id, limit: 30 }),
   ]);
 
   return {
-    client,
-    stats,
-    transactions,
+    client: { ...client, types: client.clientTypes.map((ct) => ct.type) },
+    opStats,
+    recentOps: recentOps.items,
   };
 }
 
@@ -78,6 +80,7 @@ export async function createClientFromInput(input: CreateClientInput) {
     nickname: input.nickname || undefined,
     phone: input.phone || undefined,
     note: input.note || undefined,
+    types: input.types ?? [],
   });
 }
 

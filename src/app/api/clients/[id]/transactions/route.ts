@@ -15,7 +15,7 @@ export async function GET(
       return NextResponse.json({ error: "Client introuvable" }, { status: 404 });
     }
 
-    return NextResponse.json({ data: detail.transactions }, { status: 200 });
+    return NextResponse.json({ data: detail.recentOps }, { status: 200 });
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });

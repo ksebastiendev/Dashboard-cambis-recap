@@ -66,16 +66,16 @@ export function EditClientForm({ id, initialData }: EditClientFormProps) {
   if (!isEditing) {
     return (
       <div className="grid gap-2 text-sm sm:grid-cols-2">
-        <p>Nom: <span className="font-medium">{initialData.fullName}</span></p>
-        <p>Surnom: <span className="font-medium">{initialData.nickname ?? "—"}</span></p>
-        <p>Téléphone: <span className="font-medium">{initialData.phone ?? "—"}</span></p>
-        <p>
-          Statut:{" "}
+        <div><span className="text-zinc-500">Nom :</span> <span className="font-medium">{initialData.fullName}</span></div>
+        <div><span className="text-zinc-500">Surnom :</span> <span className="font-medium">{initialData.nickname ?? "—"}</span></div>
+        <div><span className="text-zinc-500">Téléphone :</span> <span className="font-medium">{initialData.phone ?? "—"}</span></div>
+        <div className="flex items-center gap-2">
+          <span className="text-zinc-500">Statut :</span>
           <Badge variant={initialData.isActive ? "success" : "muted"}>
             {initialData.isActive ? "Actif" : "Inactif"}
           </Badge>
-        </p>
-        <p className="sm:col-span-2">Note: <span className="font-medium">{initialData.note ?? "—"}</span></p>
+        </div>
+        <div className="sm:col-span-2"><span className="text-zinc-500">Note :</span> <span className="font-medium">{initialData.note ?? "—"}</span></div>
         <div className="sm:col-span-2 pt-2">
           <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
             <Pencil className="h-4 w-4" />

@@ -1,124 +1,19 @@
 import type { Metadata } from "next";
 import { History } from "lucide-react";
-import Link from "next/link";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { Button } from "@/components/ui/button";
-import { HistoryTransactionsList } from "@/components/history/HistoryTransactionsList";
-import {
-  listClientChoices,
-} from "@/server/services/transactionService";
-import type { OperationType } from "@prisma/client";
+import { HistoryV2Client } from "@/components/history/HistoryV2Client";
 
-export const metadata: Metadata = {
-  title: "Historique",
-};
+export const metadata: Metadata = { title: "Historique — Cambis Recap" };
 
-export default async function HistoryPage({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    clientId?: string;
-    operationType?: string;
-    from?: string;
-    to?: string;
-  }>;
-}) {
-  const { clientId, operationType, from, to } = await searchParams;
-  const clients = await listClientChoices();
-
-  const typeFilter: OperationType | undefined =
-    operationType === "BUY_NAIRA" || operationType === "SELL_NAIRA"
-      ? operationType
-      : undefined;
-
+export default function HistoryPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 max-w-3xl mx-auto">
       <PageHeader
         title="Historique"
-        description="Toutes les transactions"
+        description="Toutes les opérations V2"
         icon={History}
       />
-
-      <form className="grid grid-cols-1 gap-3 rounded-lg border border-border bg-card p-4 md:grid-cols-2 xl:grid-cols-4" action="/history" method="GET">
-        <div className="space-y-1">
-          <label className="text-xs text-muted-foreground" htmlFor="clientId">
-            Client
-          </label>
-          <select
-            id="clientId"
-            name="clientId"
-            defaultValue={clientId ?? ""}
-            className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <option value="">Tous les clients</option>
-            {clients.map((client) => (
-              <option key={client.id} value={client.id}>
-                {client.fullName}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="space-y-1">
-          <label className="text-xs text-muted-foreground" htmlFor="operationType">
-            Type
-          </label>
-          <select
-            id="operationType"
-            name="operationType"
-            defaultValue={typeFilter ?? ""}
-            className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <option value="">Tous les types</option>
-            <option value="BUY_NAIRA">Achat Naira</option>
-            <option value="SELL_NAIRA">Vente Naira</option>
-          </select>
-        </div>
-
-        <div className="space-y-1">
-          <label className="text-xs text-muted-foreground" htmlFor="from">
-            Du
-          </label>
-          <input
-            id="from"
-            name="from"
-            type="date"
-            defaultValue={from ?? ""}
-            className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          />
-        </div>
-
-        <div className="space-y-1">
-          <label className="text-xs text-muted-foreground" htmlFor="to">
-            Au
-          </label>
-          <input
-            id="to"
-            name="to"
-            type="date"
-            defaultValue={to ?? ""}
-            className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          />
-        </div>
-
-        <div className="flex gap-2 md:col-span-2 xl:col-span-4 xl:justify-end">
-          <Button type="submit" variant="outline">
-            Filtrer
-          </Button>
-          <Button asChild variant="ghost">
-            <Link href="/history">Réinitialiser</Link>
-          </Button>
-        </div>
-      </form>
-
-      <HistoryTransactionsList
-        filters={{
-          clientId: clientId || undefined,
-          operationType: typeFilter,
-          from,
-          to,
-        }}
-      />
+      <HistoryV2Client />
     </div>
   );
 }
