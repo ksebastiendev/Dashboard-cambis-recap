@@ -3,7 +3,7 @@ import { LayoutDashboard } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DashboardV2Client } from "@/components/dashboard/DashboardV2Client";
 
-export const metadata: Metadata = { title: "Dashboard — Cambis Recap" };
+export const metadata: Metadata = { title: "Dashboard — Chapkey Recap" };
 
 export default function DashboardPage() {
   return (

@@ -55,13 +55,13 @@ export default function LoginPage() {
           <div className="flex items-center justify-center mx-auto">
             <Image
               src="/CAMBIS RECAP.png"
-              alt="Cambis Recap"
+              alt="Chapkey Recap"
               width={56}
               height={56}
               className="rounded-xl object-contain"
             />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Cambis Recap</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Chapkey Recap</h1>
           <p className="text-sm text-muted-foreground">
             Tableau de bord de suivi d&apos;activité
           </p>

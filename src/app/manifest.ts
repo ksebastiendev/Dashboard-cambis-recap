@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Cambis Recap",
-    short_name: "Cambis",
-    description: "Dashboard de suivi d'activité pour cambiste",
+    name: "Chapkey Recap",
+    short_name: "Chapkey",
+    description: "Dashboard de suivi d'activité Chapkey",
     start_url: "/dashboard",
     display: "standalone",
     orientation: "portrait",

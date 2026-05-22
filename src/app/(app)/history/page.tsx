@@ -3,7 +3,7 @@ import { History } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { HistoryV2Client } from "@/components/history/HistoryV2Client";
 
-export const metadata: Metadata = { title: "Historique — Cambis Recap" };
+export const metadata: Metadata = { title: "Historique — Chapkey Recap" };
 
 export default function HistoryPage() {
   return (

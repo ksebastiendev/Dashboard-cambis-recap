@@ -1,10 +1,10 @@
 export const openApiSpec = {
   openapi: "3.0.3",
   info: {
-    title: "Cambis Recap API",
+    title: "Chapkey Recap API",
     version: "1.0.0",
     description:
-      "Documentation Swagger des endpoints backend de Cambis Recap.",
+      "Documentation Swagger des endpoints backend de Chapkey Recap.",
   },
   servers: [{ url: "/", description: "Current server" }],
   tags: [
@@ -18,7 +18,7 @@ export const openApiSpec = {
       cookieAuth: {
         type: "apiKey",
         in: "cookie",
-        name: "cambis_session",
+        name: "chapkey_session",
       },
     },
     schemas: {

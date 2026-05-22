@@ -16,10 +16,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Cambis Recap",
-    template: "%s | Cambis Recap",
+    default: "Chapkey Recap",
+    template: "%s | Chapkey Recap",
   },
-  description: "Dashboard de suivi d'activité pour cambiste",
+  description: "Dashboard de suivi d'activité Chapkey",
   icons: {
     icon: "/icons/icon-192.png",
     shortcut: "/icons/icon-192.png",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Cambis",
+    title: "Chapkey",
     startupImage: "/icons/icon-512.png",
   },
 };

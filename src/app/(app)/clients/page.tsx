@@ -14,7 +14,7 @@ import { CreateClientInlineForm } from "@/components/clients/CreateClientInlineF
 import { ClientCardActions } from "@/components/clients/ClientCardActions";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Clients — Cambis Recap" };
+export const metadata: Metadata = { title: "Clients — Chapkey Recap" };
 
 const TYPE_FILTERS: Array<{ value: ClientRole | "ALL"; label: string }> = [
   { value: "ALL", label: "Tous" },

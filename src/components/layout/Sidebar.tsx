@@ -57,13 +57,13 @@ export function Sidebar() {
       <div className="flex h-16 items-center gap-3 px-5 border-b border-border">
         <Image
           src="/CAMBIS RECAP.png"
-          alt="Cambis Recap"
+          alt="Chapkey Recap"
           width={32}
           height={32}
           className="rounded-lg object-contain"
         />
         <div>
-          <p className="text-sm font-semibold">Cambis Recap</p>
+          <p className="text-sm font-semibold">Chapkey Recap</p>
           <p className="text-xs text-muted-foreground">Tableau de bord</p>
         </div>
       </div>

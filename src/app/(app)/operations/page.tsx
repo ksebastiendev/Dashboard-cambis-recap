@@ -1,6 +1,6 @@
 import { OperationsClient } from "@/components/operations/OperationsClient";
 
-export const metadata = { title: "Opérations — Cambis Recap" };
+export const metadata = { title: "Opérations — Chapkey Recap" };
 
 export default function OperationsPage() {
   return (
